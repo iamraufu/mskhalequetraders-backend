@@ -155,6 +155,24 @@ client.connect(err => {
         })
     })
 
+    // get all sells by email
+    app.get('/sells/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { email }
+        await sellsCollection.find(query).toArray((err, sells) => {
+            err && res.send({
+                status: false,
+                message: "সকল বিক্রি পেতে একটু সময় লাগছে, কিছুক্ষন পর আবার চেষ্টা করুন !"
+            })
+
+            sells &&
+            res.send({
+                status: true,
+                sells
+            })
+        })
+    })
+
     // Create Sell
     app.post('/spend', async (req, res) => {
         const spend = req.body;
@@ -182,6 +200,24 @@ client.connect(err => {
                 status: true,
                 spends
             });
+        })
+    })
+
+    // get all spending by email
+    app.get('/spends/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { email }
+        await spendsCollection.find(query).toArray((err, spends) => {
+            err && res.send({
+                status: false,
+                message: "সকল খরচ পেতে একটু সময় লাগছে, কিছুক্ষন পর আবার চেষ্টা করুন !"
+            })
+
+            spends &&
+            res.send({
+                status: true,
+                spends
+            })
         })
     })
 
