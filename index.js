@@ -33,6 +33,7 @@ app.get('/', (req, res) => {
 client.connect(err => {
     const usersCollection = client.db("mskhalequetraders").collection("users");
     const sellsCollection = client.db("mskhalequetraders").collection("sells");
+    const spendsCollection = client.db("mskhalequetraders").collection("spends");
 
     // login
     app.post('/login', async (req, res) => {
@@ -150,6 +151,36 @@ client.connect(err => {
             res.send({
                 status: true,
                 sells
+            });
+        })
+    })
+
+    // Create Sell
+    app.post('/spend', async (req, res) => {
+        const spend = req.body;
+        
+        await spendsCollection.insertOne(spend, (err, result) => {
+            err && res.send({
+                status: false,
+                message: 'নতুন খরচ যোগ করা যাচ্ছে না কিছুক্ষন পর আবার চেষ্টা করুন !',
+            })
+            result && res.send({
+                status: true,
+                message: 'খরচ যোগ করা হয়েছে'
+            });
+        });
+    })
+
+    // get all sells
+    app.get('/spends', async (req, res) => {
+        await spendsCollection.find().toArray((err, spends) => {
+            err && res.send({
+                status: false,
+                message: "সকল খরচ পেতে একটু সময় লাগছে, কিছুক্ষন পর আবার চেষ্টা করুন !"
+            })
+            res.send({
+                status: true,
+                spends
             });
         })
     })
