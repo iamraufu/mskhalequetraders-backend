@@ -33,6 +33,7 @@ app.get('/', (req, res) => {
 client.connect(err => {
     const usersCollection = client.db("mskhalequetraders").collection("users");
     const sellsCollection = client.db("mskhalequetraders").collection("sells");
+    const spendsCollection = client.db("mskhalequetraders").collection("spends");
 
     // login
     app.post('/login', async (req, res) => {
@@ -151,6 +152,72 @@ client.connect(err => {
                 status: true,
                 sells
             });
+        })
+    })
+
+    // get all sells by email
+    app.get('/sells/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { email }
+        await sellsCollection.find(query).toArray((err, sells) => {
+            err && res.send({
+                status: false,
+                message: "সকল বিক্রি পেতে একটু সময় লাগছে, কিছুক্ষন পর আবার চেষ্টা করুন !"
+            })
+
+            sells &&
+            res.send({
+                status: true,
+                sells
+            })
+        })
+    })
+
+    // Create Sell
+    app.post('/spend', async (req, res) => {
+        const spend = req.body;
+        
+        await spendsCollection.insertOne(spend, (err, result) => {
+            err && res.send({
+                status: false,
+                message: 'নতুন খরচ যোগ করা যাচ্ছে না কিছুক্ষন পর আবার চেষ্টা করুন !',
+            })
+            result && res.send({
+                status: true,
+                message: 'খরচ যোগ করা হয়েছে'
+            });
+        });
+    })
+
+    // get all sells
+    app.get('/spends', async (req, res) => {
+        await spendsCollection.find().toArray((err, spends) => {
+            err && res.send({
+                status: false,
+                message: "সকল খরচ পেতে একটু সময় লাগছে, কিছুক্ষন পর আবার চেষ্টা করুন !"
+            })
+            res.send({
+                status: true,
+                spends
+            });
+        })
+    })
+
+    // get all spending by email
+    app.get('/spends/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { email }
+        await spendsCollection.find(query).toArray((err, spends) => {
+            err && res.send({
+                status: false,
+                message: "সকল খরচ পেতে একটু সময় লাগছে, কিছুক্ষন পর আবার চেষ্টা করুন !"
+            })
+
+            spends &&
+            res.send({
+                status: true,
+                spends
+            })
         })
     })
 
