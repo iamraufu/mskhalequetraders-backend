@@ -8,7 +8,7 @@ const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config()
 app.use(cors(), express.json())
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 const user = process.env.DB_USERNAME
 const password = process.env.DB_PASSWORD
 
